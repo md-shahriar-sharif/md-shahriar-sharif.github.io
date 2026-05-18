@@ -28,11 +28,13 @@
     --serif:'Cormorant Garamond', Georgia, serif;
     --sans:'IBM Plex Sans', system-ui, -apple-system, Segoe UI, Arial, sans-serif;
     --mono:'IBM Plex Mono', monospace;
+    --topbar-h:82px;
   }
 
   *{box-sizing:border-box;margin:0;padding:0}
   html{
     scroll-behavior:smooth;
+    scroll-snap-type:y mandatory;
     background:var(--bg);
   }
   body{
@@ -43,24 +45,30 @@
       linear-gradient(180deg, var(--bg) 0%, #f2ebdf 100%);
     color:var(--text);
     min-height:100vh;
+    overflow-x:hidden;
   }
 
   a{color:inherit;text-decoration:none}
   img{max-width:100%;display:block}
 
-  /* Top bar */
   .topbar{
-    position:sticky;
+    position:fixed;
     top:0;
+    left:0;
+    right:0;
     z-index:100;
     backdrop-filter:blur(14px);
     background:rgba(246,241,232,.78);
     border-bottom:1px solid var(--line);
+    height:var(--topbar-h);
+    display:flex;
+    align-items:center;
   }
   .topbar-inner{
+    width:100%;
     max-width:1440px;
     margin:0 auto;
-    padding:18px 28px;
+    padding:0 28px;
     display:flex;
     align-items:center;
     justify-content:space-between;
@@ -95,61 +103,54 @@
     background:rgba(109,94,252,.07);
   }
 
-  /* Layout */
-  .shell{
-    max-width:1440px;
-    margin:0 auto;
+  /* Page stack */
+  .page-stack{
+    padding-top:var(--topbar-h);
+  }
+
+  .page{
+    min-height:calc(100vh - var(--topbar-h));
+    scroll-snap-align:start;
+    scroll-snap-stop:always;
     padding:34px 28px 60px;
-    display:grid;
-    grid-template-columns:minmax(0,1fr) 240px;
-    gap:28px;
-  }
-
-  .content{
-    min-width:0;
-  }
-
-  .side{
-    position:sticky;
-    top:92px;
-    align-self:start;
-    padding-top:10px;
-  }
-  .side a{
     display:flex;
     align-items:center;
-    justify-content:flex-end;
-    gap:12px;
-    color:var(--faint);
-    font-size:14px;
-    padding:10px 0;
-    transition:all .2s ease;
-  }
-  .side a::after{
-    content:"";
-    width:12px;height:12px;
-    border-radius:50%;
-    background:rgba(109,94,252,.30);
-    box-shadow:0 0 0 6px transparent;
-    transition:all .2s ease;
-    flex:0 0 auto;
-  }
-  .side a:hover,
-  .side a.active{
-    color:var(--accent);
-  }
-  .side a.active::after{
-    background:var(--accent);
-    box-shadow:0 0 0 6px rgba(109,94,252,.12);
   }
 
-  /* Hero */
+  .page-inner{
+    width:100%;
+    max-width:1440px;
+    margin:0 auto;
+  }
+
+  .page-label{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-family:var(--mono);
+    color:var(--accent);
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    margin-bottom:10px;
+  }
+
+  .page-title{
+    font-family:var(--serif);
+    font-size:clamp(2.8rem, 4.3vw, 4.9rem);
+    line-height:.98;
+    font-weight:600;
+    letter-spacing:-.03em;
+    margin-bottom:28px;
+    color:var(--text);
+  }
+
   .hero{
     display:grid;
     grid-template-columns:1.15fr .85fr;
     gap:34px;
     align-items:start;
-    padding:18px 0 42px;
+    width:100%;
   }
 
   .eyebrow{
@@ -227,9 +228,6 @@
     color:var(--white);
     font-weight:600;
   }
-  .btn.primary:hover{
-    opacity:.95;
-  }
 
   .hero-meta{
     display:flex;
@@ -270,12 +268,15 @@
     background:var(--card);
   }
 
-  .card{
+  .card, .panel, .pub, .project, .skill, .contact-list, .gal{
     background:linear-gradient(180deg, rgba(255,250,241,.96), rgba(247,242,233,.96));
     border:1px solid var(--line);
     border-radius:24px;
-    padding:24px;
     box-shadow:var(--shadow);
+  }
+
+  .card{
+    padding:24px;
   }
   .card-head{
     display:flex;
@@ -287,7 +288,6 @@
     width:12px;height:12px;border-radius:50%;
     background:var(--accent);
     box-shadow:0 0 0 5px rgba(109,94,252,.12);
-    flex:0 0 auto;
   }
   .card-title{
     font-family:var(--mono);
@@ -329,38 +329,6 @@
     font-weight:600;
     color:var(--text);
   }
-  .update a{
-    color:var(--accent);
-    border-bottom:1px solid rgba(109,94,252,.35);
-  }
-
-  /* Sections */
-  .section{
-    padding:52px 0 0;
-  }
-  .section + .section{
-    margin-top:14px;
-  }
-  .section-label{
-    display:inline-flex;
-    align-items:center;
-    gap:10px;
-    font-family:var(--mono);
-    color:var(--accent);
-    font-size:12px;
-    letter-spacing:.12em;
-    text-transform:uppercase;
-    margin-bottom:10px;
-  }
-  .section-title{
-    font-family:var(--serif);
-    font-size:clamp(2.8rem, 4.3vw, 4.9rem);
-    line-height:.98;
-    font-weight:600;
-    letter-spacing:-.03em;
-    margin-bottom:28px;
-    color:var(--text);
-  }
 
   .split{
     display:grid;
@@ -369,13 +337,8 @@
   }
 
   .panel{
-    background:rgba(255,255,255,.40);
-    border:1px solid var(--line);
-    border-radius:24px;
     padding:24px;
-    box-shadow:var(--shadow);
   }
-
   .panel h3{
     font-family:var(--mono);
     font-size:13px;
@@ -420,7 +383,7 @@
     color:var(--text);
     font-weight:600;
   }
-  .chips{
+  .chips, .list-chips{
     display:flex;
     flex-wrap:wrap;
     gap:10px;
@@ -438,7 +401,6 @@
     color:#5f54d8;
   }
 
-  /* Cards and lists */
   .list{
     display:grid;
     gap:14px;
@@ -483,18 +445,13 @@
     font-weight:300;
   }
 
-  /* Publications */
   .pub-grid{
     display:grid;
     grid-template-columns:repeat(2, minmax(0, 1fr));
     gap:16px;
   }
   .pub{
-    background:linear-gradient(180deg, rgba(255,250,241,.96), rgba(247,242,233,.96));
-    border:1px solid var(--line);
-    border-radius:22px;
     padding:20px;
-    box-shadow:var(--shadow);
   }
   .status{
     display:inline-flex;
@@ -540,7 +497,6 @@
     padding:7px 10px;
   }
 
-  /* Projects */
   .project-grid{
     display:grid;
     grid-template-columns:repeat(3, minmax(0, 1fr));
@@ -549,10 +505,6 @@
   .project{
     min-height:210px;
     padding:22px;
-    border-radius:24px;
-    background:linear-gradient(180deg, rgba(255,250,241,.96), rgba(247,242,233,.96));
-    border:1px solid var(--line);
-    box-shadow:var(--shadow);
   }
   .project .num{
     font-family:var(--mono);
@@ -583,20 +535,15 @@
     text-transform:uppercase;
   }
 
-  /* Gallery */
   .gallery-grid{
     display:grid;
     grid-template-columns:repeat(3, minmax(0, 1fr));
     gap:16px;
   }
   .gal{
-    border-radius:22px;
     overflow:hidden;
-    border:1px solid var(--line);
-    background:var(--card);
     aspect-ratio:1 / .82;
     position:relative;
-    box-shadow:var(--shadow);
   }
   .gal img{
     width:100%;
@@ -622,18 +569,13 @@
     line-height:1.4;
   }
 
-  /* Skills */
   .skills-grid{
     display:grid;
     grid-template-columns:repeat(3, minmax(0, 1fr));
     gap:16px;
   }
   .skill{
-    background:rgba(255,255,255,.40);
-    border:1px solid var(--line);
-    border-radius:22px;
     padding:20px;
-    box-shadow:var(--shadow);
   }
   .skill h4{
     font-family:var(--mono);
@@ -643,18 +585,7 @@
     color:var(--accent);
     margin-bottom:14px;
   }
-  .skill .list-chips{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-  }
-  .mini{
-    font-size:13px;
-    color:var(--muted);
-    line-height:1.8;
-  }
 
-  /* Contact */
   .contact-grid{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -668,11 +599,7 @@
     font-weight:300;
   }
   .contact-list{
-    border-top:1px solid var(--line);
-    background:rgba(255,255,255,.40);
-    border-radius:22px;
     padding:0 20px;
-    box-shadow:var(--shadow);
   }
   .contact-row{
     display:flex;
@@ -708,7 +635,7 @@
 
   footer{
     max-width:1440px;
-    margin:40px auto 0;
+    margin:0 auto;
     padding:18px 28px 36px;
     border-top:1px solid var(--line);
     display:flex;
@@ -722,28 +649,35 @@
     text-transform:uppercase;
   }
 
-  /* Responsive */
   @media (max-width: 1180px){
-    .shell{grid-template-columns:1fr}
-    .side{display:none}
-    .hero{grid-template-columns:1fr}
-    .pub-grid,.project-grid,.gallery-grid,.skills-grid,.contact-grid,.split{grid-template-columns:1fr 1fr}
-  }
-  @media (max-width: 860px){
-    .topbar-inner{padding:14px 16px}
-    .shell{padding:22px 16px 40px}
-    .hero-title{font-size:clamp(3.1rem, 12vw, 5rem)}
-    .hero-subtitle{font-size:16px}
-    .about-grid,.item,.contact-grid,.split,.pub-grid,.project-grid,.gallery-grid,.skills-grid{
+    .hero,.split,.pub-grid,.project-grid,.gallery-grid,.skills-grid,.contact-grid,.about-grid{
       grid-template-columns:1fr;
     }
-    .item-meta{order:0}
-    .item-body{order:1}
+  }
+
+  @media (max-width: 860px){
+    .topbar{
+      height:auto;
+      padding:14px 0;
+    }
+    .topbar-inner{
+      padding:0 16px;
+      flex-direction:column;
+      align-items:flex-start;
+    }
+    .page{
+      padding:22px 16px 40px;
+    }
+    .hero-title{font-size:clamp(3.1rem, 12vw, 5rem)}
+    .hero-subtitle{font-size:16px}
+    .item{grid-template-columns:1fr}
     .update{grid-template-columns:1fr}
     .portrait{width:190px;height:190px}
-    .topbar-inner{flex-direction:column;align-items:flex-start}
-    .nav{gap:4px}
-    .nav a{padding:8px 10px}
+  }
+
+  /* Helps anchors land below the fixed topbar */
+  section{
+    scroll-margin-top:calc(var(--topbar-h) + 18px);
   }
 </style>
 </head>
@@ -764,77 +698,80 @@
     </div>
   </header>
 
-  <main class="shell">
-    <div class="content">
+  <main class="page-stack">
 
-      <!-- HOME -->
-      <section class="hero" id="home">
-        <div>
-          <div class="eyebrow">Open to collaborations</div>
-          <h1 class="hero-title">Md Shahriar <em>Sharif</em></h1>
-          <p class="hero-subtitle">
-            Researcher working at the intersection of remote sensing, air quality, and urban environmental planning — using geospatial science to understand how cities and landscapes respond to climate stress, pollution, and ecological change.
-          </p>
+    <!-- PAGE 01: HOME -->
+    <section class="page" id="home">
+      <div class="page-inner">
+        <div class="hero">
+          <div>
+            <div class="eyebrow">Open to collaborations</div>
+            <h1 class="hero-title">Md Shahriar <em>Sharif</em></h1>
+            <p class="hero-subtitle">
+              Researcher working at the intersection of remote sensing, air quality, and urban environmental planning — using geospatial science to understand how cities and landscapes respond to climate stress, pollution, and ecological change.
+            </p>
 
-          <div class="actions">
-            <a class="btn primary" href="#contact">Get in touch</a>
-            <a class="btn" href="#publications">Publications</a>
-            <a class="btn" href="#" target="_blank" rel="noopener">Download CV</a>
-          </div>
-
-          <div class="hero-meta">
-            <span class="pill">MUEP Candidate</span>
-            <span class="pill">Arizona State University</span>
-            <span class="pill">Graduate Teaching Assistant</span>
-            <span class="pill">Remote Sensing</span>
-            <span class="pill">GIS</span>
-          </div>
-        </div>
-
-        <div class="hero-right">
-          <div class="portrait-wrap">
-            <!-- Replace with your real photo -->
-            <img class="portrait" src="profile.jpg" alt="Md Shahriar Sharif">
-          </div>
-
-          <div class="card">
-            <div class="card-head">
-              <span class="dot"></span>
-              <div class="card-title">Recent Updates</div>
+            <div class="actions">
+              <a class="btn primary" href="#contact">Get in touch</a>
+              <a class="btn" href="#publications">Publications</a>
+              <a class="btn" href="#">Download CV</a>
             </div>
-            <div class="updates">
-              <div class="update">
-                <div class="date">2025–Present</div>
-                <p><strong>MUEP student at Arizona State University</strong> and Graduate Teaching Assistant in the School of Geographical Sciences and Urban Planning.</p>
-              </div>
-              <div class="update">
-                <div class="date">2023–2025</div>
-                <p>Published and submitted work on <strong>air pollution, remote sensing, ecosystem services, flood susceptibility,</strong> and <strong>land cover change</strong>.</p>
-              </div>
-              <div class="update">
-                <div class="date">2024</div>
-                <p>Worked as <strong>MEAL Coordinator</strong> for a World Food Programme early recovery response in Khulna, Bangladesh.</p>
-              </div>
-              <div class="update">
-                <div class="date">2021–2024</div>
-                <p>Co-founded the <strong>Center for Environmental Research (CER)</strong> to mentor early-career researchers.</p>
-              </div>
+
+            <div class="hero-meta">
+              <span class="pill">MUEP Candidate</span>
+              <span class="pill">Arizona State University</span>
+              <span class="pill">Graduate Teaching Assistant</span>
+              <span class="pill">Remote Sensing</span>
+              <span class="pill">GIS</span>
             </div>
           </div>
-        </div>
-      </section>
 
-      <!-- ABOUT -->
-      <section class="section" id="about">
-        <div class="section-label">Profile</div>
-        <h2 class="section-title">About</h2>
+          <div class="hero-right">
+            <div class="portrait-wrap">
+              <img class="portrait" src="profile.jpg" alt="Md Shahriar Sharif">
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <span class="dot"></span>
+                <div class="card-title">Recent Updates</div>
+              </div>
+              <div class="updates">
+                <div class="update">
+                  <div class="date">2025–Present</div>
+                  <p><strong>MUEP student at Arizona State University</strong> and Graduate Teaching Assistant in the School of Geographical Sciences and Urban Planning.</p>
+                </div>
+                <div class="update">
+                  <div class="date">2023–2025</div>
+                  <p>Published and submitted work on <strong>air pollution, remote sensing, ecosystem services, flood susceptibility,</strong> and <strong>land cover change</strong>.</p>
+                </div>
+                <div class="update">
+                  <div class="date">2024</div>
+                  <p>Worked as <strong>MEAL Coordinator</strong> for a World Food Programme early recovery response in Khulna, Bangladesh.</p>
+                </div>
+                <div class="update">
+                  <div class="date">2021–2024</div>
+                  <p>Co-founded the <strong>Center for Environmental Research (CER)</strong> to mentor early-career researchers.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 02: ABOUT -->
+    <section class="page" id="about">
+      <div class="page-inner">
+        <div class="page-label">Profile</div>
+        <h2 class="page-title">About</h2>
 
         <div class="about-grid">
           <img class="photo" src="about-photo.jpg" alt="Md Shahriar Sharif photo">
           <div class="about-text">
             <p>I am an <strong>MUEP student at Arizona State University</strong> and Graduate Teaching Assistant in the School of Geographical Sciences and Urban Planning, Tempe, Arizona.</p>
             <p>I completed my Bachelor of Urban and Regional Planning at <strong>KUET, Bangladesh</strong>, graduating <strong>2nd of 69 students</strong> with a CGPA of 3.83/4.0 and two consecutive Dean's Awards.</p>
-            <p>My work spans <strong>air quality modeling, aerosol retrievals, remote sensing, wildfire emissions, ecosystem services, flood modeling,</strong> and <strong>community-scale environmental health</strong>. I have co-authored peer-reviewed publications, contributed to UGC-funded flood work, and coordinated geospatial operations for the World Food Programme.</p>
+            <p>My work spans <strong>air quality modeling, aerosol retrievals, remote sensing, wildfire emissions, ecosystem services, flood modeling,</strong> and <strong>community-scale environmental health</strong>.</p>
 
             <div class="chips">
               <span class="chip">Air Quality</span>
@@ -848,12 +785,14 @@
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- EDUCATION -->
-      <section class="section" id="education">
-        <div class="section-label">Academic Background</div>
-        <h2 class="section-title">Education &amp; Technical Skills</h2>
+    <!-- PAGE 03: EDUCATION -->
+    <section class="page" id="education">
+      <div class="page-inner">
+        <div class="page-label">Academic Background</div>
+        <h2 class="page-title">Education &amp; Technical Skills</h2>
 
         <div class="split">
           <div class="panel">
@@ -918,12 +857,14 @@
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- EXPERIENCE -->
-      <section class="section" id="experience">
-        <div class="section-label">Career</div>
-        <h2 class="section-title">Experience</h2>
+    <!-- PAGE 04: EXPERIENCE -->
+    <section class="page" id="experience">
+      <div class="page-inner">
+        <div class="page-label">Career</div>
+        <h2 class="page-title">Experience</h2>
 
         <div class="panel">
           <div class="list">
@@ -972,12 +913,14 @@
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- PUBLICATIONS -->
-      <section class="section" id="publications">
-        <div class="section-label">Scholarship</div>
-        <h2 class="section-title">Publications, Presentations &amp; Awards</h2>
+    <!-- PAGE 05: PUBLICATIONS -->
+    <section class="page" id="publications">
+      <div class="page-inner">
+        <div class="page-label">Scholarship</div>
+        <h2 class="page-title">Publications, Presentations &amp; Awards</h2>
 
         <div class="pub-grid">
           <div class="pub">
@@ -1021,41 +964,15 @@
             <div class="venue">TTEA, 8:29–44 · Sharif, Upaul (2021)</div>
             <div class="label">Journal article</div>
           </div>
-
-          <div class="pub">
-            <div class="status">In review</div>
-            <h4>Spatiotemporal dynamics of eco-environmental quality and land use in Chakaria, Bangladesh: RSEI and PCA-based assessment</h4>
-            <div class="venue">Manuscript submitted</div>
-            <div class="label">Under review</div>
-          </div>
-
-          <div class="pub">
-            <div class="status">In review</div>
-            <h4>Assessing ecosystem health by estimating primary productivity in major ecological zones of Bangladesh using GEE</h4>
-            <div class="venue">Manuscript submitted</div>
-            <div class="label">Under review</div>
-          </div>
-
-          <div class="pub">
-            <div class="status">In review</div>
-            <h4>Application of fuzzy AHP and geospatial technology to identify groundwater recharge potential zones in Dhaka</h4>
-            <div class="venue">Manuscript submitted</div>
-            <div class="label">Under review</div>
-          </div>
-
-          <div class="pub">
-            <div class="status">In review</div>
-            <h4>A geospatial approach to investigate anthropogenic changes driven by major bushfires in Australia</h4>
-            <div class="venue">Manuscript submitted</div>
-            <div class="label">Under review</div>
-          </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- PROJECTS -->
-      <section class="section" id="projects">
-        <div class="section-label">Work</div>
-        <h2 class="section-title">Projects</h2>
+    <!-- PAGE 06: PROJECTS -->
+    <section class="page" id="projects">
+      <div class="page-inner">
+        <div class="page-label">Work</div>
+        <h2 class="page-title">Projects</h2>
 
         <div class="project-grid">
           <div class="project">
@@ -1078,34 +995,16 @@
             <p>Vegetation index analysis and regression modeling across major ecological zones of Bangladesh to assess ecosystem health and climate linkages.</p>
             <div class="meta">GEE · R · NDVI · Regression Analysis</div>
           </div>
-
-          <div class="project">
-            <div class="num">04</div>
-            <h4>Rohingya Settlements — LST &amp; Vegetation Change</h4>
-            <p>Geospatial detection of land surface temperature and vegetation cover change following rapid settlement formation in Cox's Bazar.</p>
-            <div class="meta">ArcGIS · Remote Sensing · Published 2021</div>
-          </div>
-
-          <div class="project">
-            <div class="num">05</div>
-            <h4>Urban Green Space, Khulna City</h4>
-            <p>Land use change simulation using TerrSet Land Change Modeler to predict LULC impacts on climate and urban ecosystem health.</p>
-            <div class="meta">TerrSet · GEE · R · ArcGIS Pro</div>
-          </div>
-
-          <div class="project">
-            <div class="num">06</div>
-            <h4>Cyclone Remal Recovery — WFP GIS Operations</h4>
-            <p>Geospatial vulnerability mapping and MEAL coordination for WFP's early recovery response covering 5,520 households in Khulna.</p>
-            <div class="meta">ArcGIS · Field Operations · WFP 2024</div>
-          </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- GALLERY -->
-      <section class="section" id="gallery">
-        <div class="section-label">Visual Portfolio</div>
-        <h2 class="section-title">Gallery</h2>
+    <!-- PAGE 07: GALLERY -->
+    <section class="page" id="gallery">
+      <div class="page-inner">
+        <div class="page-label">Visual Portfolio</div>
+        <h2 class="page-title">Gallery</h2>
+
         <div class="gallery-grid">
           <div class="gal">
             <img src="gallery-1.jpg" alt="Conference presentation">
@@ -1119,25 +1018,15 @@
             <img src="gallery-3.jpg" alt="Field or research meeting">
             <div class="cap">Research moment</div>
           </div>
-          <div class="gal">
-            <img src="gallery-4.jpg" alt="Map or visualization">
-            <div class="cap">GIS output</div>
-          </div>
-          <div class="gal">
-            <img src="gallery-5.jpg" alt="Project screenshot">
-            <div class="cap">Remote sensing result</div>
-          </div>
-          <div class="gal">
-            <img src="gallery-6.jpg" alt="Workshop or seminar">
-            <div class="cap">Seminar / workshop</div>
-          </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- CONTACT -->
-      <section class="section" id="contact">
-        <div class="section-label">Contact</div>
-        <h2 class="section-title">Get in touch</h2>
+    <!-- PAGE 08: CONTACT -->
+    <section class="page" id="contact">
+      <div class="page-inner">
+        <div class="page-label">Contact</div>
+        <h2 class="page-title">Get in touch</h2>
 
         <div class="contact-grid">
           <p class="contact-note">
@@ -1167,18 +1056,9 @@
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-    </div>
-
-    <aside class="side" aria-label="Page sections">
-      <a href="#home" class="active">Home</a>
-      <a href="#education">Education</a>
-      <a href="#experience">Experience</a>
-      <a href="#publications">Publications</a>
-      <a href="#gallery">Gallery</a>
-      <a href="#contact">Contact</a>
-    </aside>
   </main>
 
   <footer>
@@ -1188,21 +1068,20 @@
   </footer>
 
   <script>
-    // simple active section highlight
-    const navLinks = document.querySelectorAll('.side a');
-    const sections = [...navLinks].map(a => document.querySelector(a.getAttribute('href')));
+    const navLinks = document.querySelectorAll('.nav a');
+    const sections = [...navLinks].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           navLinks.forEach(a => a.classList.remove('active'));
-          const active = document.querySelector(`.side a[href="#${entry.target.id}"]`);
+          const active = document.querySelector(`.nav a[href="#${entry.target.id}"]`);
           if (active) active.classList.add('active');
         }
       });
-    }, { threshold: 0.35 });
+    }, { threshold: 0.55 });
 
-    sections.forEach(sec => sec && observer.observe(sec));
+    sections.forEach(sec => observer.observe(sec));
   </script>
 </body>
 </html>
